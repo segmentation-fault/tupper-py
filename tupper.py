@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     # Classical Tupper's self-referential formula
     T.plot_tupper()
-    plt.savefig(os.path.join("images", "tupper_classic.png"))
+    plt.savefig(os.path.join("images", "tupper_classic.png"), bbox_inches='tight')
 
     # "Sick" k from http://keelyhill.github.io/tuppers-formula/
     k_sick = mp.mpf("19990658104895992159906328363638101787663851414537751539476865503218289618184076530123376594191"
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     k_diff = (T.k - k_sick) / 17
 
     T.plot_tupper(-k_diff)
-    plt.savefig(os.path.join("images", "tupper_sick.png"))
+    plt.savefig(os.path.join("images", "tupper_sick.png"), bbox_inches='tight')
 
     # dev nickname :)
     k_dev = mp.mpf("901484812312344202342563398265189088911806659915143866970536378291707296470726295234521843795095"
@@ -118,4 +118,4 @@ if __name__ == '__main__':
     k_diff = (T.k - k_dev) / 17
 
     T.plot_tupper(-k_diff)
-    plt.savefig(os.path.join("images", "tupper_dev.png"))
+    plt.savefig(os.path.join("images", "tupper_dev.png"), bbox_inches='tight')
