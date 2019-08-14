@@ -155,4 +155,4 @@ if __name__ == '__main__':
     err = T.bmp_to_number(os.path.join("images", "tupper_dev.png")) - k_dev
 
     # The error, is effectively 0!
-    print(err)
+    print("Error = " + str(err))
