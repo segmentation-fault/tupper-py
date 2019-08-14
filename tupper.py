@@ -16,7 +16,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import mpmath as mp
 import matplotlib.pyplot as plt
+from matplotlib.transforms import Bbox
 import numpy as np
+from PIL import Image
+import sys
 import os
 
 mp.mp.dps = 1000  # increasing the precision of mpmath
@@ -69,13 +72,14 @@ class TupperPy(object):
 
         return np.flip(np_bmp, 1)
 
-    def plot_tupper(self, i: mp.mpf = 0) -> None:
+    def plot_tupper(self, i: mp.mpf = 0) -> plt.Figure:
         """
         Creates a figure and plots a bitmap representing the i-th shift from the Tupper's original self-referential
          formula
         :param i:  i-th shift
+        :return: figure handler
         """
-        plt.figure()
+        fig = plt.figure()
 
         bmp = self.tupper_bmp(i)
 
@@ -83,6 +87,33 @@ class TupperPy(object):
 
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
+        plt.gca().set_axis_off()
+
+        return fig
+
+    def bmp_to_number(self, pic_path: str) -> mp.mpf:
+        """
+        Transforms the picture in pic_path to the corresponding Tupper's number. The picture will be resized according
+        to the height and width attributes, and transformed to a 2 bit bitmap according to a nearest neighbour
+         interpolation
+        :param pic_path: path of the picture to transform
+        :return: Tupper's number for the given picture
+        """
+        img = Image.open(pic_path)
+        # Indexed mode 2 bit
+        img = img.convert(mode='1')
+
+        #Resizing and transposing
+        img = img.resize((self.height, self.width))
+        img = img.transpose(Image.ROTATE_270)
+
+        # Getting the binary string of the bitmap
+        bstr = ""
+        for i in range(0, self.height):
+            for j in range(0, self.width):
+                bstr += str(int(img.getpixel((j, i)) < 100))
+
+        return mp.mpmathify(int(bstr, 2))*self.width
 
 
 if __name__ == '__main__':
@@ -90,8 +121,8 @@ if __name__ == '__main__':
     T = TupperPy()
 
     # Classical Tupper's self-referential formula
-    T.plot_tupper()
-    plt.savefig(os.path.join("images", "tupper_classic.png"), bbox_inches='tight')
+    fig = T.plot_tupper()
+    plt.savefig(os.path.join("images", "tupper_classic.png"), bbox_inches='tight', pad_inches=0, dpi=fig.dpi)
 
     # "Sick" k from http://keelyhill.github.io/tuppers-formula/
     k_sick = mp.mpf("19990658104895992159906328363638101787663851414537751539476865503218289618184076530123376594191"
@@ -104,8 +135,8 @@ if __name__ == '__main__':
     # Taking the difference divided by 17, and passing it to the method
     k_diff = (T.k - k_sick) / 17
 
-    T.plot_tupper(-k_diff)
-    plt.savefig(os.path.join("images", "tupper_sick.png"), bbox_inches='tight')
+    fig = T.plot_tupper(-k_diff)
+    plt.savefig(os.path.join("images", "tupper_sick.png"), bbox_inches='tight', pad_inches=0, dpi=fig.dpi)
 
     # dev nickname :)
     k_dev = mp.mpf("901484812312344202342563398265189088911806659915143866970536378291707296470726295234521843795095"
@@ -117,5 +148,11 @@ if __name__ == '__main__':
 
     k_diff = (T.k - k_dev) / 17
 
-    T.plot_tupper(-k_diff)
-    plt.savefig(os.path.join("images", "tupper_dev.png"), bbox_inches='tight')
+    fig = T.plot_tupper(-k_diff)
+    plt.savefig(os.path.join("images", "tupper_dev.png"), bbox_inches='tight', pad_inches=0, dpi=fig.dpi)
+
+    # Now from the dev image and back to the number..
+    err = T.bmp_to_number(os.path.join("images", "tupper_dev.png")) - k_dev
+
+    # The error, is effectively 0!
+    print(err)
