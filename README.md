@@ -45,6 +45,6 @@ with the following result:
 
 ![Dev Tupper](images/tupper_dev.png)
 
-It is also possible to get the Tupper's number from a picture with the `bmp_to_number`, although the picture will be resized according to the height and width attributes (usually 106x17), and transformed to a 2 bit bitmap according to a nearest neighbour interpolation.
+It is also possible to get the Tupper's number from a picture with the `bmp_to_number` method, although, internally, the picture will be resized according to the height and width attributes (usually 106x17), and transformed to a 2 bit bitmap according to a nearest neighbour interpolation. So the number is accurate only for 106x17 2 bit indexed images.
 
 Have fun! :)
