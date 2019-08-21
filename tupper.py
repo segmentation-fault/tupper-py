@@ -16,10 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import mpmath as mp
 import matplotlib.pyplot as plt
-from matplotlib.transforms import Bbox
 import numpy as np
 from PIL import Image
-import sys
 import os
 
 mp.mp.dps = 1000  # increasing the precision of mpmath
@@ -103,7 +101,7 @@ class TupperPy(object):
         # Indexed mode 2 bit
         img = img.convert(mode='1')
 
-        #Resizing and transposing
+        # Resizing and transposing
         img = img.resize((self.height, self.width))
         img = img.transpose(Image.ROTATE_270)
 
@@ -113,7 +111,7 @@ class TupperPy(object):
             for j in range(0, self.width):
                 bstr += str(int(img.getpixel((j, i)) < 100))
 
-        return mp.mpmathify(int(bstr, 2))*self.width
+        return mp.mpmathify(int(bstr, 2)) * self.width
 
 
 if __name__ == '__main__':
